@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendVerificationEmail = async (email, token) => {
-    const verificationLink = `https://localhost:${port}/verify-email?token=${token}`;
+    const verificationLink = `https://regnum-backend-bice.vercel.app/verify-email?token=${token}`;
 
     const mailOptions = {
         from: config.email.user,
@@ -23,7 +23,7 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 const sendOTPEmail = async (email, otp) => {
-    const otpLink = `https://localhost:${port}/verify-otp?email=${email}&otp=${otp}`;
+    const otpLink = `https://regnum-backend-bice.vercel.app/verify-otp?email=${email}&otp=${otp}`;
 
     const mailOptions = {
         from: config.email.user,

@@ -15,5 +15,5 @@ mongoose.connect(config.dbUri, { useNewUrlParser: true, useUnifiedTopology: true
     .catch((error) => console.error('Could not connect to MongoDB:', error));
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at https://regnum-backend-bice.vercel.app/`);
 });
