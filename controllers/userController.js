@@ -11,7 +11,12 @@ const joinWaitlist = async (req, res) => {
         const token = generateVerificationToken(email);
         const otp = generateOTP();
         const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
-
+        if(User.findOne({email})){
+            res.status(500).json({
+                "msg":"User already exists!"
+            })
+            return;
+        }
         await User.create({ email, verificationToken: token, otp, otpExpires });
 
         await sendVerificationEmail(email, token);
