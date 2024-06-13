@@ -50,7 +50,7 @@ const verifyMail = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             "msg":"Invalid or expired Token, Try Again"
         });
     }
