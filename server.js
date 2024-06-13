@@ -10,7 +10,7 @@ const port = process.env.port || 3000
 app.use(express.json());
 app.use(userRoutes);
 app.use(cors({
-    origin: 'https://regnum-backend-kjy4pdwky-harshits-projects-277d42fa.vercel.app/' // Allow requests only from this origin
+    origin: 'https://regnum-web.vercel.app' // Allow requests only from this origin
   }));
 mongoose.connect(config.dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
