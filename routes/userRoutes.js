@@ -3,6 +3,11 @@ const { joinWaitlist, verifyMail, verifyOTP } = require('../controllers/userCont
 
 const router = express.Router();
 
+router.get('/' , (req, res)=>{
+    res.status(201).json({
+        "msg" : "working alright!"
+    })
+})
 router.post('/join-waitlist', joinWaitlist);
 router.get('/verify-email', verifyMail);
 router.get('/verify-otp', verifyOTP);
