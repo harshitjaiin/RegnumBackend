@@ -13,7 +13,7 @@ const joinWaitlist = async (req, res) => {
         const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
         if(User.findOne({email})){
             res.status(500).json({
-                "msg":"User already exists!"
+                "error":"User already exists!"
             })
             return;
         }
