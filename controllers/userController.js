@@ -15,7 +15,7 @@ const joinWaitlist = async (req, res) => {
         await User.create({ email, verificationToken: token, otp, otpExpires });
 
         await sendVerificationEmail(email, token);
-        // await sendOTPEmail(email, otp);
+        await sendOTPEmail(email, otp);
         res.status(200).json({
             "msg":"Verification Mail and OTP Sent!"
         });
