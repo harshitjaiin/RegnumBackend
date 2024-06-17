@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (email, token) => {
     const verificationLink = `https://regnum-backend-bice.vercel.app/verify-email?token=${token}`;
-
+    console.log("Im inside sending mail!")
     const mailOptions = {
         from: config.email.user,
         to: email,

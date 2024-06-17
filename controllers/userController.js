@@ -1,7 +1,6 @@
 const User = require('../models/userModel');
 const { generateVerificationToken, verifyToken } = require('../utils/tokenUtils');
-const { sendVerificationEmail, sendOTPEmail } = require('../services/emailService');
-const generateOTP = require('../utils/otpUtils');
+const { sendVerificationEmail } = require('../services/emailService');
 
 const joinWaitlist = async (req, res) => {
     console.log("I'm inside waitlist!!");
@@ -16,7 +15,7 @@ const joinWaitlist = async (req, res) => {
 
         const token = generateVerificationToken(email);
         await sendVerificationEmail(email, token);
-        await User.create({ email, verificationToken: token, otp, otpExpires });
+        await User.create({ email, verificationToken: token });
 
         // const otp = generateOTP();
         // const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
@@ -46,7 +45,7 @@ const verifyMail = async (req, res) => {
         user.verificationToken = null;
         await user.save();
 
-        // res.redirect(`https://regnum-web.vercel.app/verified/index.html` , 200);
+        res.redirect(`https://regnum-web.vercel.app/verified/index.html` , 200);
     }catch (error) {
         console.log(error);
         res.status(500).json({ error: "Invalid or expired Token, Try Again" });
