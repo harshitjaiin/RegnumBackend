@@ -15,15 +15,15 @@ const joinWaitlist = async (req, res) => {
         }
 
         const token = generateVerificationToken(email);
-        const otp = generateOTP();
-        const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
-
-        await User.create({ email, verificationToken: token, otp, otpExpires });
-
         await sendVerificationEmail(email, token);
-        await sendOTPEmail(email, otp);
 
-        res.status(200).json({ msg: "Verification Mail and OTP Sent!" });
+        // const otp = generateOTP();
+        // const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
+        // await User.create({ email, verificationToken: token, otp, otpExpires });
+        // await sendOTPEmail(email, otp);
+
+
+        res.status(200).json({ msg: "Verification Mail Sent!" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error processing your request!" });
@@ -47,7 +47,7 @@ const verifyMail = async (req, res) => {
         user.verificationToken = null;
         await user.save();
 
-        res.status(200).json({ msg: "Email successfully verified." });
+        res.redirect(`https://regnum-web.vercel.app/verified/index.html` , 200);
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Invalid or expired Token, Try Again" });
