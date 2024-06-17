@@ -16,12 +16,11 @@ const joinWaitlist = async (req, res) => {
 
         const token = generateVerificationToken(email);
         await sendVerificationEmail(email, token);
+        await User.create({ email, verificationToken: token, otp, otpExpires });
 
         // const otp = generateOTP();
         // const otpExpires = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
-        // await User.create({ email, verificationToken: token, otp, otpExpires });
         // await sendOTPEmail(email, otp);
-
 
         res.status(200).json({ msg: "Verification Mail Sent!" });
     } catch (error) {
@@ -32,11 +31,11 @@ const joinWaitlist = async (req, res) => {
 
 const verifyMail = async (req, res) => {
     const { token } = req.query;
-
+    console.log(token);
     try {
         const payload = verifyToken(token);
         const email = payload.email;
-
+        console.log(email);
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -47,8 +46,8 @@ const verifyMail = async (req, res) => {
         user.verificationToken = null;
         await user.save();
 
-        res.redirect(`https://regnum-web.vercel.app/verified/index.html` , 200);
-    } catch (error) {
+        // res.redirect(`https://regnum-web.vercel.app/verified/index.html` , 200);
+    }catch (error) {
         console.log(error);
         res.status(500).json({ error: "Invalid or expired Token, Try Again" });
     }
