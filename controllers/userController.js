@@ -45,7 +45,7 @@ const verifyMail = async (req, res) => {
         user.verificationToken = null;
         await user.save();
 
-        res.redirect(`https://regnum-web.vercel.app/verified/index.html`);
+        res.redirect(`https://regnum.life/verified/index.html`);
     }catch (error) {
         console.log(error);
         res.status(500).json({ error: "Invalid or expired Token, Try Again" });
