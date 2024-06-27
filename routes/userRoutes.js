@@ -16,6 +16,6 @@ router.get('/', (req, res) => {
 router.post('/join-waitlist', joinWaitlist);
 router.get('/verify-email', verifyMail);
 router.post('/send-otp' , sendOTP);
-router.get('/verify-otp', verifyOTP);
+router.post('/verify-otp', verifyOTP);
 
 module.exports = router;
