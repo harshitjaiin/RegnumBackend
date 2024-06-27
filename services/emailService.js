@@ -23,13 +23,11 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 const sendOTPEmail = async (email, otp) => {
-    const otpLink = `https://regnum-backend-bice.vercel.app/verify-otp?email=${email}&otp=${otp}`;
-
     const mailOptions = {
         from: config.email.user,
         to: email,
         subject: 'Your OTP Code',
-        text: `Your OTP code is ${otp}. Click the following link to enter your OTP: ${otpLink}`
+        text: `Your OTP code is ${otp}.`
     };
 
     await transporter.sendMail(mailOptions);

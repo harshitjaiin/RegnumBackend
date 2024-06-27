@@ -8,3 +8,7 @@ exports.generateVerificationToken = (email) => {
 exports.verifyToken = (token) => {
     return jwt.verify(token, config.jwtSecret);
 };
+
+exports.generateOTP = () => {
+    return Math.floor(10000 + Math.random() * 99999).toString(); // Generates a 6-digit OTP
+};
