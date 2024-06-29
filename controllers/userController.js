@@ -1,22 +1,19 @@
-const User = require('../models/userModel');
+const userDataSchema = require('../models/userDataModel');
 const { generateVerificationToken, verifyToken, generateOTP } = require('../utils/tokenUtils');
 const { sendVerificationEmail, sendOTPEmail } = require('../services/emailService');
 
+// Join waitlist and send verification email
 const joinWaitlist = async (req, res) => {
-    console.log("I'm inside waitlist!!");
     const { email } = req.body;
 
     try {
-        // Check if User exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await userDataSchema.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "User already exists!" });
         }
 
         const token = generateVerificationToken(email);
         await sendVerificationEmail(email, token);
-
-        // Create new user with verification token
         await User.create({ email, verificationToken: token });
 
         res.status(200).json({ msg: "Verification Mail Sent!" });
@@ -26,23 +23,19 @@ const joinWaitlist = async (req, res) => {
     }
 };
 
+// Verify email using the token
 const verifyMail = async (req, res) => {
     const { token } = req.query;
-    console.log(token);
+
     try {
-        // Verify the token
         const payload = verifyToken(token);
         const email = payload.email;
-        console.log(email);
 
-        // Find user by email
-        const user = await User.findOne({ email });
-
+        const user = await userDataSchema.findOne({ email });
         if (!user) {
             return res.status(400).json({ error: "Invalid Link!" });
         }
 
-        // Update user's verification status
         user.isVerified = true;
         user.verificationToken = null;
         await user.save();
@@ -54,17 +47,44 @@ const verifyMail = async (req, res) => {
     }
 };
 
+// Send OTP
+const sendOTP = async (req, res) => {
+    const { email } = req.body;
+    console.log(email);
+    try {
+        // Generate OTP
+        const otp = generateOTP();
+        // Calculate OTP expiration (15 minutes from now)
+        const otpExpires = new Date(Date.now() + 15 * 60 * 1000);
+        console.log(otp);
+        console.log(otpExpires);
+        // Create a new user entry with email, otp, and otpExpires
+        await userDataSchema.create({
+            email,
+            otp,
+            otpExpires
+        });
+
+        // Send OTP email
+        await sendOTPEmail(email, otp);
+
+        res.status(200).send("OTP sent to email.");
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        res.status(500).send("Error processing your request!");
+    }
+};
+// Verify OTP
 const verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
+    console.log(email);
     try {
-        // Find user by email
-        const user = await User.findOne({ email });
+        const user = await userDataSchema.findOne({ email });
 
         if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
             return res.status(400).json({ error: "Invalid email or OTP!" });
         }
 
-        // Update user's OTP verification status
         user.isVerified = true;
         user.otp = null;
         user.otpExpires = null;
@@ -77,34 +97,25 @@ const verifyOTP = async (req, res) => {
     }
 };
 
-const sendOTP = async (req, res) => {
-    const { email } = req.body;
+// Update user data incrementally
+const updateUser = async (req, res) => {
+    const { email, ...updateData } = req.body;
 
     try {
-        // Generate new OTP
-        const otp = generateOTP();
-
-        // Find user by email
-        let user = await User.findOne({ email });
+        const user = await userDataSchema.findOneAndUpdate(
+            { email },
+            { $set: updateData },
+            { new: true }
+        );
 
         if (!user) {
-            // If user doesn't exist, create a new one
-            user = await User.create({ email });
+            return res.status(404).json({ error: "User not found!" });
         }
 
-        // Update user with OTP details
-        user.otp = otp;
-        user.isVerified = false;
-        user.otpExpires = Date.now() + 15 * 60 * 1000; // OTP valid for 15 minutes
-        await user.save();
-
-        // Send OTP email
-        await sendOTPEmail(email, otp);
-
-        res.status(200).send("OTP sent to email.");
+        res.status(200).json({ msg: "User data updated successfully.", user });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error processing your request!");
+        res.status(500).json({ error: "Error updating user data!" });
     }
 };
 
@@ -112,5 +123,6 @@ module.exports = {
     joinWaitlist,
     verifyMail,
     verifyOTP,
-    sendOTP
+    sendOTP,
+    updateUser
 };
