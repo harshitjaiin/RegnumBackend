@@ -48,11 +48,6 @@ const verifyMail = async (req, res) => {
 };
 
 // Send OTP
-const UserDataModel = require('../models/userDataModel');
-const { generateOTP } = require('../utils/tokenUtils');
-const { sendOTPEmail } = require('../services/emailService');
-
-// Send OTP
 const sendOTP = async (req, res) => {
     const { email } = req.body;
     console.log(email);
@@ -89,9 +84,6 @@ const sendOTP = async (req, res) => {
     }
 };
 
-module.exports = {
-    sendOTP
-};
 
 // Verify OTP
 const verifyOTP = async (req, res) => {
