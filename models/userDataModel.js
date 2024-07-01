@@ -29,10 +29,10 @@ const userDataSchema = new mongoose.Schema({
     DiningPreference: { type: [String] },
     Hobbies: { type: [String] },
     FitnessPreference: { type: [String] },
-    CouplePhoto1: { type: String },
-    CouplePhoto2: { type: String },
-    MalePicture: { type: String },
-    FemalePicture: { type: String },
+    CouplePhoto1: { type: Object },
+    CouplePhoto2: { type: Object },
+    MalePicture: { type: Object },
+    FemalePicture: { type: Object },
     otp: { type: String }, // Add OTP field
     otpExpires: { type: Date }, // Add OTP expiry field
     isVerified: { type: Boolean, default: false }, // Add verification status field
