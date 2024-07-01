@@ -53,11 +53,11 @@ const sendOTP = async (req, res) => {
     console.log(email);
     try {
         // Check if the user already exists
-        let existingUser = await UserDataModel.findOne({ email });
+        let existingUser = await userDataSchema.findOne({ email });
 
         // If user exists, delete the existing document
         if (existingUser) {
-            await UserDataModel.deleteOne({ email });
+            await userDataSchema.deleteOne({ email });
         }
 
         // Generate OTP
@@ -68,7 +68,7 @@ const sendOTP = async (req, res) => {
         console.log(otpExpires);
 
         // Create a new user entry with email, otp, and otpExpires
-        await UserDataModel.create({
+        await userDataSchema.create({
             email,
             otp,
             otpExpires
