@@ -10,5 +10,5 @@ exports.verifyToken = (token) => {
 };
 
 exports.generateOTP = () => {
-    return Math.floor(10000 + Math.random() * 99999).toString(); // Generates a 5-digit OTP
+    return Math.floor(10001 + Math.random() * 90000).toString(); // Generates a 5-digit OTP
 };

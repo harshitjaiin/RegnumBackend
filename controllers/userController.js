@@ -48,18 +48,32 @@ const verifyMail = async (req, res) => {
 };
 
 // Send OTP
+const UserDataModel = require('../models/userDataModel');
+const { generateOTP } = require('../utils/tokenUtils');
+const { sendOTPEmail } = require('../services/emailService');
+
+// Send OTP
 const sendOTP = async (req, res) => {
     const { email } = req.body;
     console.log(email);
     try {
+        // Check if the user already exists
+        let existingUser = await UserDataModel.findOne({ email });
+
+        // If user exists, delete the existing document
+        if (existingUser) {
+            await UserDataModel.deleteOne({ email });
+        }
+
         // Generate OTP
         const otp = generateOTP();
         // Calculate OTP expiration (15 minutes from now)
         const otpExpires = new Date(Date.now() + 15 * 60 * 1000);
         console.log(otp);
         console.log(otpExpires);
+
         // Create a new user entry with email, otp, and otpExpires
-        await userDataSchema.create({
+        await UserDataModel.create({
             email,
             otp,
             otpExpires
@@ -74,6 +88,11 @@ const sendOTP = async (req, res) => {
         res.status(500).send("Error processing your request!");
     }
 };
+
+module.exports = {
+    sendOTP
+};
+
 // Verify OTP
 const verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
